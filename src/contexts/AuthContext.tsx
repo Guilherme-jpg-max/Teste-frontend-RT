@@ -39,14 +39,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
         senha,
       });
 
-      const receivedToken = response.headers.authorization;
+      const jwtToken = response.data.dados.token;
 
-      if (receivedToken) {
-        const jwtToken = receivedToken.replace("Bearer ", "");
+      if (jwtToken) {
         setToken(jwtToken);
         api.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
         localStorage.setItem("@App:token", jwtToken);
         navigate("/chamados");
+      } else {
+        alert("Login bem-sucedido, mas o token não foi fornecido.");
       }
     } catch (error) {
       console.error("Falha na autenticação", error);
@@ -63,7 +64,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
