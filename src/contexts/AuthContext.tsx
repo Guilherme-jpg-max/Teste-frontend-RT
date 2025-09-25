@@ -13,6 +13,7 @@ interface AuthContextType {
   token: string | null;
   loading?: boolean;
   signIn: (credentials: Credentials) => Promise<void>;
+  signOut: () => void;
 }
 
 interface AuthProviderProps {
@@ -58,11 +59,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  const signOut = () => {
+    localStorage.removeItem("@App:token");
+    setToken(null);
+    delete api.defaults.headers.common["Authorization"];
+    navigate("/login");
+  };
+
   const value = {
     isAuthenticated: !!token,
     token,
     loading,
     signIn,
+    signOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

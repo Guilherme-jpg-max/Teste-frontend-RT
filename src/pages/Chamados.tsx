@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import type { ChamadoListItem } from "../types/chamado";
+import { useAuth } from "../contexts/AuthContext";
 
 export function ChamadosPage() {
+  const { signOut } = useAuth();
   const [chamados, setChamados] = useState<ChamadoListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +17,7 @@ export function ChamadosPage() {
           pageSize: 10,
         });
 
-        setChamados(response.data.dados.items);
+        setChamados(response.data.dados.dados);
         setError(null);
       } catch (err) {
         console.error("Erro ao buscar chamados:", err);
@@ -32,8 +34,24 @@ export function ChamadosPage() {
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h1>Lista de Chamados</h1>
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h1>Lista de Chamados</h1>
+        <button
+          onClick={signOut}
+          style={{ padding: "8px 16px", cursor: "pointer" }}
+        >
+          Sair
+        </button>
+      </div>
+      <table
+        style={{ width: "100%", borderCollapse: "collapse", marginTop: "1rem" }}
+      >
         <thead>
           <tr style={{ backgroundColor: "#f2f2f2" }}>
             <th
