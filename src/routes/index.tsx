@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { LoginPage } from "../pages/Login";
 import { ChamadosPage } from "../pages/Chamados";
+import { ChamadoDetailPage } from "../pages/ChamadoDetailPage";
 
 import { ProtectedRoute } from "./ProtectedRoute";
 import { useAuth } from "../contexts/AuthContext";
@@ -26,6 +27,14 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <ChamadosPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/chamados/:id"
+        element={
+          <ProtectedRoute>
+            <ChamadoDetailPage />
           </ProtectedRoute>
         }
       />
