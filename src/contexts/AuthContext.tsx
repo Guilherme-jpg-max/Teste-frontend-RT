@@ -11,6 +11,7 @@ interface Credentials {
 interface AuthContextType {
   isAuthenticated: boolean;
   token: string | null;
+  loading?: boolean;
   signIn: (credentials: Credentials) => Promise<void>;
 }
 
@@ -22,6 +23,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,6 +32,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setToken(storedToken);
       api.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
     }
+    setLoading(false);
   }, []);
 
   const signIn = async ({ email, senha }: Credentials) => {
@@ -58,12 +61,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const value = {
     isAuthenticated: !!token,
     token,
+    loading,
     signIn,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
