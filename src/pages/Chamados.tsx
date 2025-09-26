@@ -12,10 +12,8 @@ export function ChamadosPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Estado para guardar a SELEÇÃO ATUAL do filtro
   const [filtroSelecionado, setFiltroSelecionado] = useState<string>("todos");
 
-  // Estado para guardar o FILTRO APLICADO na busca
   const [filtroAtivo, setFiltroAtivo] = useState<string>("todos");
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,11 +33,10 @@ export function ChamadosPage() {
           pageSize: pageSize,
         };
 
-        // Converte a string do filtro ('atendidos', 'rejeitado') para o boolean que a API espera
         if (filtroAtivo === "atendidos") {
           payload.atendido = true;
         } else if (filtroAtivo === "rejeitado") {
-          payload.atendido = false; // Assumindo que Rejeitado = não atendido
+          payload.atendido = false;
         }
 
         const response = await api.post("/Chamado/listagem", payload);
@@ -57,9 +54,8 @@ export function ChamadosPage() {
     }
 
     fetchChamados();
-  }, [currentPage, filtroAtivo]); // Roda quando a página muda OU quando um novo filtro é APLICADO
+  }, [currentPage, filtroAtivo]);
 
-  // O botão "Filtrar" agora atualiza o filtro ativo e reseta a página
   const handleFilter = () => {
     setCurrentPage(1);
     setFiltroAtivo(filtroSelecionado);
@@ -80,15 +76,29 @@ export function ChamadosPage() {
         }}
       >
         <h1>Lista de Chamados</h1>
-        <button
-          onClick={signOut}
-          style={{ padding: "8px 16px", cursor: "pointer" }}
-        >
-          Sair
-        </button>
+        <div>
+          <button
+            onClick={() => navigate("/chamados/novo")}
+            style={{
+              padding: "8px 16px",
+              cursor: "pointer",
+              marginRight: "1rem",
+              backgroundColor: "#28a745",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+            }}
+          >
+            Novo Chamado
+          </button>
+          <button
+            onClick={signOut}
+            style={{ padding: "8px 16px", cursor: "pointer" }}
+          >
+            Sair
+          </button>
+        </div>
       </div>
-
-      {/* Interface de filtro simplificada */}
       <div
         style={{
           display: "flex",
