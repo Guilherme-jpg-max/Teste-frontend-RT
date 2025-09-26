@@ -1,45 +1,81 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import AsyncSelect from "react-select/async";
+import api from "../services/api";
+
+interface OptionType {
+  value: number;
+  label: string;
+}
 
 export function ChamadoCreatePage() {
   const navigate = useNavigate();
 
+  const [selectedPessoa, setSelectedPessoa] = useState<OptionType | null>(null);
+  const [bairro, setBairro] = useState("");
   const [rua, setRua] = useState("");
   const [numero, setNumero] = useState("");
   const [cep, setCep] = useState("");
   const [cidade, setCidade] = useState("");
   const [estado, setEstado] = useState("");
-
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const loadPessoasAssistidas = async (
+    inputValue: string
+  ): Promise<OptionType[]> => {
+    try {
+      const response = await api.post("/PessoaAssistida/Select", {
+        pesquisa: inputValue,
+      });
+      return response.data.dados.map(
+        (pessoa: { id: number; descricao: string }) => ({
+          value: pessoa.id,
+          label: pessoa.descricao,
+        })
+      );
+    } catch (error) {
+      console.error("Erro ao buscar pessoas assistidas", error);
+      return [];
+    }
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-
-    console.log("Formulário enviado!");
+    console.log("Formulário 'salvo' (apenas redirecionando).");
+    navigate("/chamados");
   };
 
   return (
     <div style={{ padding: "2rem", maxWidth: "800px", margin: "auto" }}>
-      <Link
-        to="/chamados"
-        style={{ marginBottom: "1.5rem", display: "inline-block" }}
-      >
-        &larr; Voltar para a lista
-      </Link>
-
       <h1>Criar Novo Chamado</h1>
-
       <form
         onSubmit={handleSubmit}
         style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
       >
-        <div style={{ border: "1px solid #ccc", padding: "1rem" }}>
-          <p>Campo "Pessoa Assistida" (autocomplete) virá aqui.</p>
-        </div>
+        <label>
+          Pessoa Assistida:
+          <AsyncSelect
+            cacheOptions
+            loadOptions={loadPessoasAssistidas}
+            defaultOptions
+            value={selectedPessoa}
+            onChange={(option) => setSelectedPessoa(option as OptionType)}
+            placeholder="Digite para buscar uma pessoa..."
+            loadingMessage={() => "Buscando..."}
+            noOptionsMessage={() => "Nenhum resultado encontrado"}
+          />
+        </label>
 
-        <div style={{ border: "1px solid #ccc", padding: "1rem" }}>
-          <p>Campo "Bairro" (autocomplete) virá aqui.</p>
-        </div>
+        <label>
+          Bairro:
+          <input
+            type="text"
+            value={bairro}
+            onChange={(e) => setBairro(e.target.value)}
+            style={{ width: "100%", padding: "8px", boxSizing: "border-box" }}
+            placeholder="Digite o bairro"
+          />
+        </label>
 
         <label>
           Rua:
@@ -50,7 +86,6 @@ export function ChamadoCreatePage() {
             style={{ width: "100%", padding: "8px" }}
           />
         </label>
-
         <div style={{ display: "flex", gap: "1rem" }}>
           <label style={{ flex: 1 }}>
             Número:
@@ -71,7 +106,6 @@ export function ChamadoCreatePage() {
             />
           </label>
         </div>
-
         <div style={{ display: "flex", gap: "1rem" }}>
           <label style={{ flex: 2 }}>
             Cidade:
@@ -92,7 +126,6 @@ export function ChamadoCreatePage() {
             />
           </label>
         </div>
-
         <div
           style={{
             display: "flex",
@@ -113,7 +146,7 @@ export function ChamadoCreatePage() {
             disabled={isSubmitting}
             style={{
               padding: "10px 20px",
-              backgroundColor: "#007bff",
+              backgroundColor: isSubmitting ? "#ccc" : "#007bff",
               color: "white",
               border: "none",
             }}
