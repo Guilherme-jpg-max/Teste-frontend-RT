@@ -12,59 +12,57 @@ export function ChamadosPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [pesquisa, setPesquisa] = useState("");
-  const [filtroAtendido, setFiltroAtendido] = useState<boolean | null>(null);
+  // Estado para guardar a SELEÇÃO ATUAL do filtro
+  const [filtroSelecionado, setFiltroSelecionado] = useState<string>("todos");
+
+  // Estado para guardar o FILTRO APLICADO na busca
+  const [filtroAtivo, setFiltroAtivo] = useState<string>("todos");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const pageSize = 10;
 
-  async function fetchChamados(
-    page: number,
-    params: { pesquisa?: string; atendido?: boolean | null }
-  ) {
-    try {
-      setIsLoading(true);
-
-      const payload: {
-        currentPage: number;
-        pageSize: number;
-        pesquisa?: string;
-        atendido?: boolean;
-      } = {
-        currentPage: page,
-        pageSize: pageSize,
-      };
-
-      if (params.pesquisa) {
-        payload.pesquisa = params.pesquisa;
-      }
-      if (params.atendido !== null) {
-        payload.atendido = params.atendido;
-      }
-
-      const response = await api.post("/Chamado/listagem", payload);
-
-      setChamados(response.data.dados.dados);
-      setTotalPages(response.data.dados.totalPages);
-
-      setError(null);
-    } catch (err) {
-      console.error("Erro ao buscar chamados:", err);
-      setError("Não foi possível carregar a lista de chamados.");
-      setChamados([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
   useEffect(() => {
-    fetchChamados(currentPage, { pesquisa, atendido: filtroAtendido });
-  }, [currentPage, pesquisa, filtroAtendido]);
+    async function fetchChamados() {
+      try {
+        setIsLoading(true);
+        const payload: {
+          currentPage: number;
+          pageSize: number;
+          atendido?: boolean;
+        } = {
+          currentPage: currentPage,
+          pageSize: pageSize,
+        };
 
+        // Converte a string do filtro ('atendidos', 'rejeitado') para o boolean que a API espera
+        if (filtroAtivo === "atendidos") {
+          payload.atendido = true;
+        } else if (filtroAtivo === "rejeitado") {
+          payload.atendido = false; // Assumindo que Rejeitado = não atendido
+        }
+
+        const response = await api.post("/Chamado/listagem", payload);
+
+        setChamados(response.data.dados.dados);
+        setTotalPages(response.data.dados.totalPages);
+        setError(null);
+      } catch (err) {
+        console.error("Erro ao buscar chamados:", err);
+        setError("Não foi possível carregar a lista de chamados.");
+        setChamados([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchChamados();
+  }, [currentPage, filtroAtivo]); // Roda quando a página muda OU quando um novo filtro é APLICADO
+
+  // O botão "Filtrar" agora atualiza o filtro ativo e reseta a página
   const handleFilter = () => {
     setCurrentPage(1);
-    fetchChamados(1, { pesquisa, atendido: filtroAtendido });
+    setFiltroAtivo(filtroSelecionado);
   };
 
   const handleRowClick = (id: number) => {
@@ -90,6 +88,7 @@ export function ChamadosPage() {
         </button>
       </div>
 
+      {/* Interface de filtro simplificada */}
       <div
         style={{
           display: "flex",
@@ -98,24 +97,14 @@ export function ChamadosPage() {
           alignItems: "center",
         }}
       >
-        <input
-          type="text"
-          placeholder="Pesquisar por nome da pessoa assistida..."
-          value={pesquisa}
-          onChange={(e) => setPesquisa(e.target.value)}
-          style={{ padding: "8px", flexGrow: 1 }}
-        />
         <select
-          value={filtroAtendido === null ? "todos" : String(filtroAtendido)}
-          onChange={(e) => {
-            const value = e.target.value;
-            setFiltroAtendido(value === "todos" ? null : value === "true");
-          }}
+          value={filtroSelecionado}
+          onChange={(e) => setFiltroSelecionado(e.target.value)}
           style={{ padding: "8px" }}
         >
-          <option value="todos">Todos os Status</option>
-          <option value="true">Atendidos</option>
-          <option value="false">Pendentes</option>
+          <option value="todos">Todos</option>
+          <option value="atendidos">Atendidos</option>
+          <option value="rejeitado">Rejeitado</option>
         </select>
         <button onClick={handleFilter} style={{ padding: "8px 16px" }}>
           Filtrar
@@ -136,10 +125,9 @@ export function ChamadosPage() {
                     padding: "8px",
                     border: "1px solid #ddd",
                     textAlign: "left",
-                    width: "120px",
                   }}
                 >
-                  Ações
+                  ID
                 </th>
                 <th
                   style={{
@@ -168,6 +156,15 @@ export function ChamadosPage() {
                 >
                   Status
                 </th>
+                <th
+                  style={{
+                    padding: "8px",
+                    border: "1px solid #ddd",
+                    textAlign: "left",
+                  }}
+                >
+                  Ações
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -175,12 +172,7 @@ export function ChamadosPage() {
                 chamados.map((chamado) => (
                   <tr key={chamado.id}>
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>
-                      <button
-                        onClick={() => handleRowClick(chamado.id)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        Ver detalhes
-                      </button>
+                      {chamado.id}
                     </td>
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                       {chamado.bairro || "Não informado"}
@@ -193,12 +185,20 @@ export function ChamadosPage() {
                     <td style={{ padding: "8px", border: "1px solid #ddd" }}>
                       {chamado.status.label}
                     </td>
+                    <td style={{ padding: "8px", border: "1px solid #ddd" }}>
+                      <button
+                        onClick={() => handleRowClick(chamado.id)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        Ver detalhes
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={5}
                     style={{ textAlign: "center", padding: "10px" }}
                   >
                     Nenhum chamado encontrado.
@@ -228,7 +228,7 @@ export function ChamadosPage() {
             </span>
             <button
               onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
+              disabled={currentPage >= totalPages}
             >
               Próximo
             </button>
