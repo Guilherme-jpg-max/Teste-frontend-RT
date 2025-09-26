@@ -39,7 +39,7 @@ export function AtendimentoCreatePage() {
       <div className="bg-white shadow-md rounded-lg p-6 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           <p className="text-center text-gray-500 p-4 border-2 border-dashed rounded-md">
-            Campo "Pessoa Assistida" virá aqui.
+            Campo "Pessoa Assistida"
           </p>
 
           <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 mt-2">

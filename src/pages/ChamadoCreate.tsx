@@ -67,7 +67,6 @@ export function ChamadoCreatePage() {
                 placeholder="Digite para buscar uma pessoa..."
                 loadingMessage={() => "Buscando..."}
                 noOptionsMessage={() => "Nenhum resultado encontrado"}
-                // Estilos customizados para o react-select se parecer com os inputs
                 classNames={{
                   control: () =>
                     "mt-1 !border !border-gray-300 !rounded-md !shadow-sm focus-within:!ring-2 focus-within:!ring-blue-500 focus-within:!border-blue-500",
