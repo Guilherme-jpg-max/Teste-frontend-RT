@@ -18,7 +18,7 @@ export function ChamadoCreatePage() {
   const [cep, setCep] = useState("");
   const [cidade, setCidade] = useState("");
   const [estado, setEstado] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting] = useState(false);
 
   const loadPessoasAssistidas = async (
     inputValue: string
@@ -54,7 +54,6 @@ export function ChamadoCreatePage() {
 
         <div className="bg-white shadow-md rounded-lg p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Campos do formulário */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Pessoa Assistida
@@ -177,7 +176,6 @@ export function ChamadoCreatePage() {
               </div>
             </div>
 
-            {/* Botões de Ação */}
             <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 mt-2">
               <button
                 type="button"
