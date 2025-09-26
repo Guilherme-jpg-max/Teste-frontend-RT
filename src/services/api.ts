@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://beta.guardia-api.box3.work/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 export default api;
