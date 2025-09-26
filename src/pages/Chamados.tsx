@@ -156,9 +156,9 @@ export function ChamadosPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
                           onClick={() => handleRowClick(chamado.id)}
-                          className="text-indigo-600 hover:text-indigo-900 hover:underline"
+                          className="py-1 px-3 text-sm font-medium bg-indigo-100 text-indigo-700 rounded-md hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
                         >
-                          Ver detalhes
+                          detalhes
                         </button>
                       </td>
                     </tr>
