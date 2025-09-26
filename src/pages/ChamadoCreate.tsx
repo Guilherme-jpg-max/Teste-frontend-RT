@@ -46,115 +46,157 @@ export function ChamadoCreatePage() {
   };
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "800px", margin: "auto" }}>
-      <h1>Criar Novo Chamado</h1>
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-      >
-        <label>
-          Pessoa Assistida:
-          <AsyncSelect
-            cacheOptions
-            loadOptions={loadPessoasAssistidas}
-            defaultOptions
-            value={selectedPessoa}
-            onChange={(option) => setSelectedPessoa(option as OptionType)}
-            placeholder="Digite para buscar uma pessoa..."
-            loadingMessage={() => "Buscando..."}
-            noOptionsMessage={() => "Nenhum resultado encontrado"}
-          />
-        </label>
+    <div className="bg-gray-50 min-h-screen p-4 sm:p-6 md:p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+          Criar Novo Chamado
+        </h1>
 
-        <label>
-          Bairro:
-          <input
-            type="text"
-            value={bairro}
-            onChange={(e) => setBairro(e.target.value)}
-            style={{ width: "100%", padding: "8px", boxSizing: "border-box" }}
-            placeholder="Digite o bairro"
-          />
-        </label>
+        <div className="bg-white shadow-md rounded-lg p-6 sm:p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Campos do formulário */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Pessoa Assistida
+              </label>
+              <AsyncSelect
+                cacheOptions
+                loadOptions={loadPessoasAssistidas}
+                defaultOptions
+                value={selectedPessoa}
+                onChange={(option) => setSelectedPessoa(option as OptionType)}
+                placeholder="Digite para buscar uma pessoa..."
+                loadingMessage={() => "Buscando..."}
+                noOptionsMessage={() => "Nenhum resultado encontrado"}
+                // Estilos customizados para o react-select se parecer com os inputs
+                classNames={{
+                  control: () =>
+                    "mt-1 !border !border-gray-300 !rounded-md !shadow-sm focus-within:!ring-2 focus-within:!ring-blue-500 focus-within:!border-blue-500",
+                  input: () => "text-gray-900",
+                  placeholder: () => "text-gray-400",
+                }}
+              />
+            </div>
 
-        <label>
-          Rua:
-          <input
-            type="text"
-            value={rua}
-            onChange={(e) => setRua(e.target.value)}
-            style={{ width: "100%", padding: "8px" }}
-          />
-        </label>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <label style={{ flex: 1 }}>
-            Número:
-            <input
-              type="text"
-              value={numero}
-              onChange={(e) => setNumero(e.target.value)}
-              style={{ width: "100%", padding: "8px" }}
-            />
-          </label>
-          <label style={{ flex: 1 }}>
-            CEP:
-            <input
-              type="text"
-              value={cep}
-              onChange={(e) => setCep(e.target.value)}
-              style={{ width: "100%", padding: "8px" }}
-            />
-          </label>
+            <div>
+              <label
+                htmlFor="bairro"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Bairro
+              </label>
+              <input
+                id="bairro"
+                type="text"
+                value={bairro}
+                onChange={(e) => setBairro(e.target.value)}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Digite o bairro"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="rua"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Rua
+              </label>
+              <input
+                id="rua"
+                type="text"
+                value={rua}
+                onChange={(e) => setRua(e.target.value)}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label
+                  htmlFor="numero"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Número
+                </label>
+                <input
+                  id="numero"
+                  type="text"
+                  value={numero}
+                  onChange={(e) => setNumero(e.target.value)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="cep"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  CEP
+                </label>
+                <input
+                  id="cep"
+                  type="text"
+                  value={cep}
+                  onChange={(e) => setCep(e.target.value)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="sm:col-span-2">
+                <label
+                  htmlFor="cidade"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Cidade
+                </label>
+                <input
+                  id="cidade"
+                  type="text"
+                  value={cidade}
+                  onChange={(e) => setCidade(e.target.value)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="estado"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Estado
+                </label>
+                <input
+                  id="estado"
+                  type="text"
+                  value={estado}
+                  onChange={(e) => setEstado(e.target.value)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            {/* Botões de Ação */}
+            <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 mt-2">
+              <button
+                type="button"
+                onClick={() => navigate("/chamados")}
+                className="py-2 px-4 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? "Salvando..." : "Salvar Chamado"}
+              </button>
+            </div>
+          </form>
         </div>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <label style={{ flex: 2 }}>
-            Cidade:
-            <input
-              type="text"
-              value={cidade}
-              onChange={(e) => setCidade(e.target.value)}
-              style={{ width: "100%", padding: "8px" }}
-            />
-          </label>
-          <label style={{ flex: 1 }}>
-            Estado:
-            <input
-              type="text"
-              value={estado}
-              onChange={(e) => setEstado(e.target.value)}
-              style={{ width: "100%", padding: "8px" }}
-            />
-          </label>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: "1rem",
-            marginTop: "1rem",
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => navigate("/chamados")}
-            style={{ padding: "10px 20px" }}
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            style={{
-              padding: "10px 20px",
-              backgroundColor: isSubmitting ? "#ccc" : "#007bff",
-              color: "white",
-              border: "none",
-            }}
-          >
-            {isSubmitting ? "Salvando..." : "Salvar Chamado"}
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 }

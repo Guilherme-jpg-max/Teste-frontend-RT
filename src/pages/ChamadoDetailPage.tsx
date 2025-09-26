@@ -1,4 +1,3 @@
-// src/pages/ChamadoDetailPage.tsx
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../services/api";
@@ -13,7 +12,6 @@ export function ChamadoDetailPage() {
 
   useEffect(() => {
     if (!id) return;
-
     async function fetchChamadoDetail() {
       try {
         setIsLoading(true);
@@ -27,101 +25,157 @@ export function ChamadoDetailPage() {
         setIsLoading(false);
       }
     }
-
     fetchChamadoDetail();
   }, [id]);
 
   if (isLoading)
-    return <div style={{ padding: "2rem" }}>Carregando detalhes...</div>;
-  if (error)
-    return <div style={{ padding: "2rem", color: "red" }}>{error}</div>;
+    return (
+      <div className="p-8 text-center text-gray-500">
+        Carregando detalhes...
+      </div>
+    );
+  if (error) return <div className="p-8 text-center text-red-600">{error}</div>;
   if (!chamado)
-    return <div style={{ padding: "2rem" }}>Chamado não encontrado.</div>;
+    return (
+      <div className="p-8 text-center text-gray-500">
+        Chamado não encontrado.
+      </div>
+    );
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <Link
-        to="/chamados"
-        style={{ marginBottom: "1.5rem", display: "inline-block" }}
-      >
-        &larr; Voltar para a lista
-      </Link>
+    <div className="p-4 sm:p-6 md:p-8 bg-gray-50 min-h-screen">
+      <div className="max-w-4xl mx-auto">
+        <Link
+          to="/chamados"
+          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold mb-6 transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+          Voltar para a lista
+        </Link>
 
-      <h1>Detalhes do Chamado #{chamado.id}</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+          Detalhes do Chamado #{chamado.id}
+        </h1>
 
-      <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "1rem",
-          borderRadius: "8px",
-        }}
-      >
-        <h3>Informações do Chamado</h3>
-        <p>
-          <strong>Status:</strong> {chamado.status.label}
-        </p>
-        <p>
-          <strong>Endereço:</strong>{" "}
-          {`${chamado.rua}, ${chamado.numero || "S/N"} - ${
-            chamado.bairro || "Não informado"
-          }`}
-        </p>
-        <p>
-          <strong>Cidade/Estado:</strong>{" "}
-          {`${chamado.cidade} / ${chamado.estado}`}
-        </p>
-        <p>
-          <strong>Data do Acionamento:</strong>{" "}
-          {new Date(chamado.dataCadastro).toLocaleString("pt-BR")}
-        </p>
-        <p>
-          <strong>Data da Resposta:</strong>{" "}
-          {chamado.dataRespondido
-            ? new Date(chamado.dataRespondido).toLocaleString("pt-BR")
-            : "Aguardando resposta"}
-        </p>
-      </div>
+        {/* Container para os cards de informação */}
+        <div className="space-y-6">
+          {/* Card: Informações do Chamado */}
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h3 className="text-xl font-semibold text-gray-700 border-b border-gray-200 pb-3 mb-4">
+              Informações do Chamado
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Status</dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {chamado.status.label}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Endereço</dt>
+                <dd className="mt-1 text-sm text-gray-900">{`${chamado.rua}, ${
+                  chamado.numero || "S/N"
+                } - ${chamado.bairro || "Não informado"}`}</dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">
+                  Cidade/Estado
+                </dt>
+                <dd className="mt-1 text-sm text-gray-900">{`${chamado.cidade} / ${chamado.estado}`}</dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">CEP</dt>
+                <dd className="mt-1 text-sm text-gray-900">{chamado.cep}</dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">
+                  Data do Acionamento
+                </dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {new Date(chamado.dataCadastro).toLocaleString("pt-BR")}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">
+                  Data da Resposta
+                </dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {chamado.dataRespondido
+                    ? new Date(chamado.dataRespondido).toLocaleString("pt-BR")
+                    : "Aguardando resposta"}
+                </dd>
+              </div>
+            </div>
+          </div>
 
-      <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "1rem",
-          borderRadius: "8px",
-          marginTop: "1rem",
-        }}
-      >
-        <h3>Pessoa Assistida</h3>
-        <p>
-          <strong>Nome:</strong> {chamado.pessoaAssistida.nome}
-        </p>
-        <p>
-          <strong>CPF:</strong> {chamado.pessoaAssistida.cpf}
-        </p>
-        <p>
-          <strong>Telefone:</strong> {chamado.pessoaAssistida.telefone}
-        </p>
-        <p>
-          <strong>Email:</strong>{" "}
-          {chamado.pessoaAssistida.email || "Não informado"}
-        </p>
-      </div>
+          {/* Card: Pessoa Assistida */}
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h3 className="text-xl font-semibold text-gray-700 border-b border-gray-200 pb-3 mb-4">
+              Pessoa Assistida
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Nome</dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {chamado.pessoaAssistida.nome}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">CPF</dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {chamado.pessoaAssistida.cpf}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Telefone</dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {chamado.pessoaAssistida.telefone}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Email</dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {chamado.pessoaAssistida.email || "Não informado"}
+                </dd>
+              </div>
+            </div>
+          </div>
 
-      <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "1rem",
-          borderRadius: "8px",
-          marginTop: "1rem",
-        }}
-      >
-        <h3>Dispositivo</h3>
-        <p>
-          <strong>Marca/Modelo:</strong>{" "}
-          {`${chamado.dispositivo.marca} ${chamado.dispositivo.modelo}`}
-        </p>
-        <p>
-          <strong>Identificador:</strong> {chamado.dispositivo.identificador}
-        </p>
+          {/* Card: Dispositivo */}
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h3 className="text-xl font-semibold text-gray-700 border-b border-gray-200 pb-3 mb-4">
+              Dispositivo
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+              <div>
+                <dt className="text-sm font-medium text-gray-500">
+                  Marca/Modelo
+                </dt>
+                <dd className="mt-1 text-sm text-gray-900">{`${chamado.dispositivo.marca} ${chamado.dispositivo.modelo}`}</dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">
+                  Identificador
+                </dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {chamado.dispositivo.identificador}
+                </dd>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
