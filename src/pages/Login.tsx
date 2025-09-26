@@ -25,7 +25,6 @@ export function LoginPage() {
   }
 
   return (
-    // Container principal que centraliza tudo
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="w-full max-w-sm p-8 space-y-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-800">

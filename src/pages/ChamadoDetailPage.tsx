@@ -69,9 +69,7 @@ export function ChamadoDetailPage() {
           Detalhes do Chamado #{chamado.id}
         </h1>
 
-        {/* Container para os cards de informação */}
         <div className="space-y-6">
-          {/* Card: Informações do Chamado */}
           <div className="bg-white shadow-md rounded-lg p-6">
             <h3 className="text-xl font-semibold text-gray-700 border-b border-gray-200 pb-3 mb-4">
               Informações do Chamado
@@ -120,7 +118,6 @@ export function ChamadoDetailPage() {
             </div>
           </div>
 
-          {/* Card: Pessoa Assistida */}
           <div className="bg-white shadow-md rounded-lg p-6">
             <h3 className="text-xl font-semibold text-gray-700 border-b border-gray-200 pb-3 mb-4">
               Pessoa Assistida
@@ -153,7 +150,6 @@ export function ChamadoDetailPage() {
             </div>
           </div>
 
-          {/* Card: Dispositivo */}
           <div className="bg-white shadow-md rounded-lg p-6">
             <h3 className="text-xl font-semibold text-gray-700 border-b border-gray-200 pb-3 mb-4">
               Dispositivo

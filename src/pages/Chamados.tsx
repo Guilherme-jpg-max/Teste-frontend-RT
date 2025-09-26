@@ -60,7 +60,6 @@ export function ChamadosPage() {
 
   return (
     <div className="p-4 sm:p-6 md:p-8">
-      {/* Cabeçalho da Página */}
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800 mb-4 sm:mb-0">
           Lista de Chamados
@@ -81,7 +80,6 @@ export function ChamadosPage() {
         </div>
       </header>
 
-      {/* Barra de Filtros */}
       <div className="flex items-center gap-4 mb-4">
         <select
           value={filtroSelecionado}
@@ -100,7 +98,6 @@ export function ChamadosPage() {
         </button>
       </div>
 
-      {/* Conteúdo Principal (Loading, Erro ou Tabela) */}
       {isLoading ? (
         <div className="text-center py-10 text-gray-500">
           Carregando chamados...
@@ -111,7 +108,6 @@ export function ChamadosPage() {
         </div>
       ) : (
         <>
-          {/* Container da Tabela */}
           <div className="bg-white shadow-md rounded-lg overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -174,8 +170,6 @@ export function ChamadosPage() {
               </tbody>
             </table>
           </div>
-
-          {/* Paginação */}
           <div className="flex items-center justify-center mt-6 gap-4">
             <button
               onClick={() => setCurrentPage(currentPage - 1)}
