@@ -1,9 +1,9 @@
-# Projeto de Gerenciamento de Chamados
+Projeto de Gerenciamento de Chamados
 
 Aplicação front-end desenvolvida em React para gerenciar um sistema de chamados, consumindo uma API para autenticação, listagem, visualização de detalhes e criação de novos registros.
 Com mais funcionalidades a serem implementada, no momentom, o foco estava apenas no consumo da api, fazendo o minimo de estilzação, pois foi uma das praticas que desenvolvi, costumo fazer apenas a logia de implementação primeriro para que tudo esteja funcionando e depois adiciono os estilos.
 
-## Funcionalidades Implementadas
+Funcionalidades Implementadas
 
 Autenticação de Usuário: Tela de login que consome a API para validar credenciais e obter um token JWT para acesso seguro.
 Gerenciamento de Sessão: O token do usuário é salvo localmente, permitindo que a sessão persista ao recarregar a página. Inclui funcionalidade de Logout.
@@ -12,7 +12,7 @@ Filtro e Pesquisa: Funcionalidade para filtrar a lista de chamados por status (A
 Visualização de Detalhes: Rota dedicada (`/chamados/:id`) para exibir todas as informações de um chamado específico.
 Criação de Chamado: Formulário completo para a criação de um novo chamado, com campos de texto e seletores dinâmicos que consultam a API em tempo real para autocompletar.
 
-## Tecnologias Utilizadas
+Tecnologias Utilizadas
 
 Esta seção detalha as principais tecnologias e o porquê de suas escolhas para este projeto.
 
@@ -38,7 +38,7 @@ Foi fundamental para implementar os campos de "Pessoa Assistida" e "Bairro" no f
 
 Durante o desenvolvimento, alguns desafios foram encontrados, principalmente relacionados à integração com a API e à lógica de UI.
 
-#### 1. Integração com a API
+1.  Integração com a API
 
 A API apresentava algumas particularidades que exigiram depuração e adaptação:
 
@@ -48,11 +48,11 @@ Endpoint de Bairro com Erro `500`: O endpoint `POST /api/Chamado/select/bairro` 
 Solução de Contorno: Para não bloquear o desenvolvimento, o campo de autocomplete foi temporariamente substituído por um campo de texto simples, permitindo a continuidade do fluxo.
 Requisitos Implícitos no `ChamadoDTO`: Durante a implementação do formulário de criação, a API retornou erros `400 (Bad Request)`. A depuração revelou que campos não presentes no formulário, como `dataCadastro`, `latitude` e `longitude`, eram obrigatórios. A solução foi gerar esses dados no frontend no momento da submissão.
 
-#### 2. Lógica da Interface (UI)
+2. Lógica da Interface (UI)
 
 A funcionalidade de pesquisa na lista de chamados passou por um refinamento. Inicialmente, foi implementada uma busca instantânea no frontend, mas, por preferência de design, foi revertida para um modelo mais controlado, com um botão "Filtrar" que dispara a busca no backend, oferecendo um feedback de carregamento claro ao usuário.
 
-## Como Executar o Projeto Localmente
+Como Executar o Projeto Localmente
 
 1.  Clone o repositório:
     git clone <https://github.com/Guilherme-jpg-max/chamados-app.git>
@@ -64,3 +64,5 @@ A funcionalidade de pesquisa na lista de chamados passou por um refinamento. Ini
     npm run dev
 
 A aplicação estará disponível em `http://localhost:5173`.
+
+Uma breve descrição mais pessoal de como foi fazer esse desafio, apesar de ter pouca experiência com react que estou vendo agora na faculade, eu não esperava que eu fosse ter tanta dificuldade. Mas acredito que essas dificuldades, problemas e bugs sejam porque são tecnologias nova pra mim, o react nem tanto, mas usar typeScript e o consumo de api com o react eu não tinha visto ainda, então os primeiros dias foi mais estudos do que desenvolvimento e si. Onde acabei ganhando conhecimento, porém perdendi no tempo. Fiquei confuso em relção a algumas requisições da api, que até mesmo travei, mas não disisti e tentei entregar o máximo.
