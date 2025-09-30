@@ -11,8 +11,18 @@ export function ChamadosPage() {
   const [chamados, setChamados] = useState<ChamadoListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Adicionado estado para o campo de pesquisa
+  const [pesquisa, setPesquisa] = useState("");
+
   const [filtroSelecionado, setFiltroSelecionado] = useState<string>("todos");
-  const [filtroAtivo, setFiltroAtivo] = useState<string>("todos");
+
+  // O filtro ativo agora também inclui a pesquisa
+  const [filtroAtivo, setFiltroAtivo] = useState({
+    texto: "",
+    status: "todos",
+  });
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const pageSize = 10;
@@ -24,16 +34,24 @@ export function ChamadosPage() {
         const payload: {
           currentPage: number;
           pageSize: number;
+          pesquisa?: string; // Adicionado para enviar a pesquisa para a API
           atendido?: boolean;
         } = {
           currentPage: currentPage,
           pageSize: pageSize,
         };
-        if (filtroAtivo === "atendidos") {
+
+        // Adiciona a pesquisa ao payload se ela existir
+        if (filtroAtivo.texto) {
+          payload.pesquisa = filtroAtivo.texto;
+        }
+
+        if (filtroAtivo.status === "atendidos") {
           payload.atendido = true;
-        } else if (filtroAtivo === "rejeitado") {
+        } else if (filtroAtivo.status === "rejeitado") {
           payload.atendido = false;
         }
+
         const response = await api.post("/Chamado/listagem", payload);
         setChamados(response.data.dados.dados);
         setTotalPages(response.data.dados.totalPages);
@@ -51,7 +69,16 @@ export function ChamadosPage() {
 
   const handleFilter = () => {
     setCurrentPage(1);
-    setFiltroAtivo(filtroSelecionado);
+    setFiltroAtivo({ texto: pesquisa, status: filtroSelecionado });
+  };
+
+  const handleClearFilters = () => {
+    setPesquisa("");
+    setFiltroSelecionado("todos");
+    setFiltroAtivo({ texto: "", status: "todos" });
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+    }
   };
 
   const handleRowClick = (id: number) => {
@@ -86,22 +113,40 @@ export function ChamadosPage() {
         </div>
       </header>
 
-      <div className="flex items-center gap-4 mb-4">
-        <select
-          value={filtroSelecionado}
-          onChange={(e) => setFiltroSelecionado(e.target.value)}
-          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="todos">Todos</option>
-          <option value="atendidos">Atendidos</option>
-          <option value="rejeitado">Rejeitado</option>
-        </select>
-        <button
-          onClick={handleFilter}
-          className="py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150"
-        >
-          Filtrar
-        </button>
+      {/* Barra de filtros com o campo de pesquisa */}
+      <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <input
+            type="text"
+            placeholder="Pesquisar por nome..."
+            value={pesquisa}
+            onChange={(e) => setPesquisa(e.target.value)}
+            className="p-2 border border-gray-300 rounded-md w-full sm:col-span-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <select
+            value={filtroSelecionado}
+            onChange={(e) => setFiltroSelecionado(e.target.value)}
+            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="todos">Todos</option>
+            <option value="atendidos">Atendidos</option>
+            <option value="rejeitado">Rejeitado</option>
+          </select>
+          <div className="flex items-end gap-2">
+            <button
+              onClick={handleFilter}
+              className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700"
+            >
+              Filtrar
+            </button>
+            <button
+              onClick={handleClearFilters}
+              className="w-full py-2 px-4 bg-gray-200 text-gray-800 font-semibold rounded-md shadow-sm hover:bg-gray-300"
+            >
+              Limpar
+            </button>
+          </div>
+        </div>
       </div>
 
       {isLoading ? (
