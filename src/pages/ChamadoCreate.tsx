@@ -21,13 +21,11 @@ export function ChamadoCreatePage() {
   const [estado, setEstado] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 🔽 --- NOVOS ESTADOS PARA LOCALIZAÇÃO --- 🔽
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
 
-  // 🔹 Buscar pessoas assistidas
   const loadPessoasAssistidas = async (
     inputValue: string
   ): Promise<OptionType[]> => {
@@ -47,7 +45,6 @@ export function ChamadoCreatePage() {
     }
   };
 
-  // 🔹 Buscar bairros
   const loadBairros = async (inputValue: string): Promise<OptionType[]> => {
     try {
       const response = await api.post("/Chamado/select/bairro", {
@@ -65,7 +62,6 @@ export function ChamadoCreatePage() {
     }
   };
 
-  // 🔽 --- NOVA FUNÇÃO PARA OBTER LOCALIZAÇÃO --- 🔽
   const handleGetLocation = () => {
     if (!navigator.geolocation) {
       setLocationError("Geolocalização não é suportada pelo seu navegador.");
@@ -103,14 +99,12 @@ export function ChamadoCreatePage() {
     );
   };
 
-  // 🔹 Submeter formulário (VERSÃO FINAL CORRIGIDA)
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!selectedPessoa) {
       alert("Selecione uma pessoa assistida");
       return;
     }
-    // A validação do bairro continua sendo importante para garantir que o label exista
     if (!selectedBairro || !selectedBairro.label) {
       alert("Selecione um bairro");
       return;
@@ -123,20 +117,15 @@ export function ChamadoCreatePage() {
     try {
       setIsSubmitting(true);
 
-      // --- MONTANDO O PAYLOAD CORRETO DE ACORDO COM O DTO ---
       const payload = {
         pessoaAssistidaId: selectedPessoa.value,
-        // MUDANÇA 1: Usar o NOME do bairro (label) e a chave "bairro"
         bairro: selectedBairro.label,
         rua,
-        // MUDANÇA 2: Enviar o número como string (remover o parseInt)
         numero,
         cep,
         cidade,
         estado,
-        // MUDANÇA 3: Converter latitude para string
         latitude: latitude.toString(),
-        // MUDANÇA 4: Converter longitude para string
         longitude: longitude.toString(),
       };
 
@@ -144,7 +133,6 @@ export function ChamadoCreatePage() {
 
       await api.post("/Chamado", payload);
 
-      // Esta linha já está correta, de acordo com o fluxo que você mencionou
       navigate("/chamados");
     } catch (error: any) {
       console.error("Erro ao salvar chamado", error);
@@ -166,7 +154,6 @@ export function ChamadoCreatePage() {
 
         <div className="bg-white shadow-md rounded-lg p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* ... Campos Pessoa Assistida e Bairro (sem alterações) ... */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Pessoa Assistida
@@ -210,7 +197,6 @@ export function ChamadoCreatePage() {
               />
             </div>
 
-            {/* ... Campos de Endereço (sem alterações) ... */}
             <div>
               <label
                 htmlFor="rua"
@@ -295,7 +281,6 @@ export function ChamadoCreatePage() {
               </div>
             </div>
 
-            {/* 🔽 --- NOVA SEÇÃO DE LOCALIZAÇÃO --- 🔽 */}
             <div className="p-4 border border-gray-200 rounded-md space-y-3">
               <h3 className="text-lg font-medium text-gray-800">
                 Geolocalização
@@ -322,7 +307,6 @@ export function ChamadoCreatePage() {
               )}
             </div>
 
-            {/* Botões */}
             <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 mt-2">
               <button
                 type="button"

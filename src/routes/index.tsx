@@ -7,6 +7,7 @@ import { ChamadoCreatePage } from "../pages/ChamadoCreate";
 import { AtendimentosPage } from "../pages/AtendimentosPage";
 import { AtendimentoDetailPage } from "../pages/AtendimentoDetailPage";
 import { AtendimentoCreatePage } from "../pages/AtendimentoCreatePage";
+import { PessoaAssistidaCreatePage } from "../pages/PessoaAssistidaCreatePage";
 
 import { ProtectedRoute } from "./ProtectedRoute";
 import { useAuth } from "../contexts/AuthContext";
@@ -58,6 +59,15 @@ export function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/pessoas-assistidas/novo"
+        element={
+          <ProtectedRoute>
+            <PessoaAssistidaCreatePage />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/atendimentos/novo"
         element={

@@ -11,13 +11,8 @@ export function ChamadosPage() {
   const [chamados, setChamados] = useState<ChamadoListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Adicionado estado para o campo de pesquisa
   const [pesquisa, setPesquisa] = useState("");
-
   const [filtroSelecionado, setFiltroSelecionado] = useState<string>("todos");
-
-  // O filtro ativo agora também inclui a pesquisa
   const [filtroAtivo, setFiltroAtivo] = useState({
     texto: "",
     status: "todos",
@@ -34,14 +29,13 @@ export function ChamadosPage() {
         const payload: {
           currentPage: number;
           pageSize: number;
-          pesquisa?: string; // Adicionado para enviar a pesquisa para a API
+          pesquisa?: string;
           atendido?: boolean;
         } = {
           currentPage: currentPage,
           pageSize: pageSize,
         };
 
-        // Adiciona a pesquisa ao payload se ela existir
         if (filtroAtivo.texto) {
           payload.pesquisa = filtroAtivo.texto;
         }
@@ -110,10 +104,15 @@ export function ChamadosPage() {
           >
             Sair
           </button>
+          <button
+            onClick={() => navigate("/pessoas-assistidas/novo")}
+            className="py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700"
+          >
+            Criar Nova Pessoa Assistida
+          </button>
         </div>
       </header>
 
-      {/* Barra de filtros com o campo de pesquisa */}
       <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <input
