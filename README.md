@@ -66,3 +66,20 @@ Como Executar o Projeto Localmente
 A aplicação estará disponível em `http://localhost:5173`.
 
 Uma breve descrição mais pessoal de como foi fazer esse desafio, apesar de ter pouca experiência com react que estou vendo agora na faculade, eu não esperava que eu fosse ter tanta dificuldade. Mas acredito que essas dificuldades, problemas e bugs sejam porque são tecnologias nova pra mim, o react nem tanto, mas usar typeScript e o consumo de api com o react eu não tinha visto ainda, então os primeiros dias foi mais estudos do que desenvolvimento e si. Onde acabei ganhando conhecimento, porém perdendi no tempo. Fiquei confuso em relção a algumas requisições da api, que até mesmo travei, mas não disisti e tentei entregar o máximo.
+
+Documentação sobre segunda parte feita apartir do dia 29 até o dia 01 de outubro.
+
+Primeiras alterações foram na forma, como a api responde em alguns casos, tentei adaptar melhor a forma como eu recebia os dados e os exibiam, mas ainda assim algumas dificuldades no tratamento de algunas requisições.
+
+1 - A única parte que não foi alterada foi da do login.
+
+2 - A parte de chamados foi melhorada não só visualmente, masa logica de como os dados eram exibidos e tratados de forma mais eficiente.
+2.2 - com os detalhes agora sendo exibidos da melhor forma, e como foi pedido.
+2.3 - Criação de chamado foi implementado como foi solicitado .
+3.4 - Após salvar a tela retonar para tela de chamados como foi solicitado.
+
+3 - Atendimento, acredito que a parte onde eu tive mais dificuldade de entender como usar algumas requisições e como tratar os dados de forma eficiente.
+3.1 - Os atendimento são filtrados por aqueles que ainda estão com a documentação pendente. E são mostrados na tabela.
+3.2 Os detalhes do atendimento tinha que ter uma opção para finalizar, porém os atendemintos que já estavam cadastrados já estavam finalizados.
+3.3 Em relação a criação do antendimento, quase todos os campos foram implementados, com exeção de api/chamado - por algum motivo a api quando eu fazia essa requisiçaõ em especifico dentro do atendimento ela não estva me retoandno nada.
+3.4 As demais opção foram implementdas.
