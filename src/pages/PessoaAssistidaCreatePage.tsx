@@ -23,16 +23,13 @@ export function PessoaAssistidaCreatePage() {
       setIsSubmitting(true);
 
       const payload = {
-        id: 0,
-        dataUltimaAlteracao: new Date().toISOString(),
-        usuarioUltimaAlteracao: "string",
         dataCadastro: new Date().toISOString(),
         usuarioCadastro: "string",
         nome,
-        cpf,
-        telefone,
+        cpf: cpf.replace(/\D/g, ""),
+        telefone: telefone.replace(/\D/g, ""),
         email,
-        cep,
+        cep: cep.replace(/\D/g, ""),
         rua,
         bairro,
         cidade,
@@ -58,102 +55,106 @@ export function PessoaAssistidaCreatePage() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen p-4 sm:p-6 md:p-8">
+    <div className="bg-gray-100 min-h-screen p-4 sm:p-6 md:p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">
           Criar Nova Pessoa Assistida
         </h1>
 
-        <div className="bg-white shadow-md rounded-lg p-6 sm:p-8">
+        <div className="bg-white shadow-md rounded-lg p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Nome
-              </label>
-              <input
-                type="text"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Nome
+                </label>
+                <input
+                  type="text"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  required
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                CPF
-              </label>
-              <input
-                type="text"
-                value={cpf}
-                onChange={(e) => setCpf(e.target.value)}
-                required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Telefone
-              </label>
-              <input
-                type="text"
-                value={telefone}
-                onChange={(e) => setTelefone(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                CEP
-              </label>
-              <input
-                type="text"
-                value={cep}
-                onChange={(e) => setCep(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Rua
-              </label>
-              <input
-                type="text"
-                value={rua}
-                onChange={(e) => setRua(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Bairro
-              </label>
-              <input
-                type="text"
-                value={bairro}
-                onChange={(e) => setBairro(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  CPF
+                </label>
+                <input
+                  type="text"
+                  value={cpf}
+                  onChange={(e) => setCpf(e.target.value)}
+                  required
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Telefone
+                </label>
+                <input
+                  type="text"
+                  value={telefone}
+                  onChange={(e) => setTelefone(e.target.value)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="border-t border-gray-200"></div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  CEP
+                </label>
+                <input
+                  type="text"
+                  value={cep}
+                  onChange={(e) => setCep(e.target.value)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Rua
+                </label>
+                <input
+                  type="text"
+                  value={rua}
+                  onChange={(e) => setRua(e.target.value)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div className="md:col-span-3">
+                <label className="block text-sm font-medium text-gray-700">
+                  Bairro
+                </label>
+                <input
+                  type="text"
+                  value={bairro}
+                  onChange={(e) => setBairro(e.target.value)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700">
                   Cidade
                 </label>
@@ -165,6 +166,7 @@ export function PessoaAssistidaCreatePage() {
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Estado
@@ -179,7 +181,7 @@ export function PessoaAssistidaCreatePage() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 mt-2">
+            <div className="flex justify-end gap-4 pt-4 mt-6 border-t border-gray-200">
               <button
                 type="button"
                 onClick={() => navigate("/chamados")}
