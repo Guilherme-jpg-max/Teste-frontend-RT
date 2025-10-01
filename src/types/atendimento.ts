@@ -68,8 +68,7 @@ export interface FiltroAtendimentoDTO {
 
 export interface PessoaAssistidaSelect {
   id: number;
-  nome: string;
-  cpf: string;
+  descrcao: string;
 }
 
 export interface ChamadoSelect {
@@ -81,8 +80,7 @@ export interface ChamadoSelect {
 
 export interface ViaturaSelect {
   id: number;
-  placa: string;
-  identificador: string;
+  descricao: string;
 }
 
 export interface UsuarioSelect {

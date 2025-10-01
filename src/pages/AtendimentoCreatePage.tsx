@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import type {
   AtendimentoCreateDTO,
   PessoaAssistidaSelect,
   ChamadoSelect,
+  ChamadoSelectDTO,
   ViaturaSelect,
   UsuarioSelect,
   AtendimentoTipoSelect,
@@ -37,6 +38,7 @@ export function AtendimentoCreatePage() {
   const [error, setError] = useState<string | null>(null);
 
   const extractData = (response: any) => {
+    if (response?.data?.dados?.dados) return response.data.dados.dados;
     if (response?.data?.dados) return response.data.dados;
     if (response?.data) return response.data;
     return [];
@@ -48,30 +50,32 @@ export function AtendimentoCreatePage() {
         setIsLoading(true);
         setError(null);
 
-        console.log("Iniciando carregamento dos selects...");
-
         try {
           const pessoasResponse = await api.post("/PessoaAssistida/Select", {});
-          const pessoasData = extractData(pessoasResponse);
-          setPessoasAssistidas(Array.isArray(pessoasData) ? pessoasData : []);
-          console.log("Pessoas carregadas:", pessoasData);
+          setPessoasAssistidas(extractData(pessoasResponse));
         } catch (err) {
           console.error("Erro ao carregar pessoas:", err);
           setPessoasAssistidas([]);
         }
 
         try {
-          const chamadosResponse = await api.post("/Chamado/listagem", {
+          const chamadoDTO: ChamadoSelectDTO = {
+            pesquisa: "",
             pageSize: 1000,
             currentPage: 1,
             ativo: true,
-          });
-          let chamadosData = extractData(chamadosResponse);
-          if (chamadosData?.dados) {
-            chamadosData = chamadosData.dados;
-          }
-          setChamados(Array.isArray(chamadosData) ? chamadosData : []);
-          console.log("Chamados carregados:", chamadosData);
+            atendido: false,
+            pessoaAssistidaId: 0,
+            impressao: false,
+            bairro: "",
+            dataInicio: "2000-01-01T00:00:00Z",
+            dataFim: "2100-01-01T00:00:00Z",
+          };
+          const chamadosResponse = await api.post(
+            "/Chamado/listagem",
+            chamadoDTO
+          );
+          setChamados(extractData(chamadosResponse));
         } catch (err) {
           console.error("Erro ao carregar chamados:", err);
           setChamados([]);
@@ -79,11 +83,10 @@ export function AtendimentoCreatePage() {
 
         try {
           const viaturasResponse = await api.post("/Viatura/Select", {
-            disponivel: true,
+            pesquisa: "",
+            disponivel: false,
           });
-          const viaturasData = extractData(viaturasResponse);
-          setViaturas(Array.isArray(viaturasData) ? viaturasData : []);
-          console.log("Viaturas carregadas:", viaturasData);
+          setViaturas(extractData(viaturasResponse));
         } catch (err) {
           console.error("Erro ao carregar viaturas:", err);
           setViaturas([]);
@@ -91,9 +94,7 @@ export function AtendimentoCreatePage() {
 
         try {
           const usuariosResponse = await api.post("/Usuario/Select", {});
-          const usuariosData = extractData(usuariosResponse);
-          setUsuarios(Array.isArray(usuariosData) ? usuariosData : []);
-          console.log("Usuários carregados:", usuariosData);
+          setUsuarios(extractData(usuariosResponse));
         } catch (err) {
           console.error("Erro ao carregar usuários:", err);
           setUsuarios([]);
@@ -103,18 +104,14 @@ export function AtendimentoCreatePage() {
           const tiposResponse = await api.post("/AtendimentoTipo/select", {
             pesquisa: "",
           });
-          const tiposData = extractData(tiposResponse);
-          setAtendimentoTipos(Array.isArray(tiposData) ? tiposData : []);
-          console.log("Tipos carregados:", tiposData);
+          setAtendimentoTipos(extractData(tiposResponse));
         } catch (err) {
           console.error("Erro ao carregar tipos:", err);
           setAtendimentoTipos([]);
         }
-
-        console.log("Carregamento concluído!");
       } catch (err) {
-        console.error("Erro geral ao carregar dados dos selects:", err);
-        setError("Erro ao carregar dados necessários para o formulário.");
+        console.error("Erro geral ao carregar selects:", err);
+        setError("Erro ao carregar dados do formulário.");
       } finally {
         setIsLoading(false);
       }
@@ -127,10 +124,7 @@ export function AtendimentoCreatePage() {
     field: keyof AtendimentoCreateDTO,
     value: string | number
   ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -150,10 +144,7 @@ export function AtendimentoCreatePage() {
     try {
       setIsSubmitting(true);
       setError(null);
-
-      console.log("Enviando dados:", formData);
       await api.post("/Atendimento", formData);
-
       navigate("/atendimentos");
     } catch (err) {
       console.error("Erro ao criar atendimento:", err);
@@ -165,37 +156,15 @@ export function AtendimentoCreatePage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="text-center py-10 text-gray-500">
-          Carregando formulário...
-        </div>
+      <div className="max-w-4xl mx-auto p-6 text-center text-gray-500">
+        Carregando formulário...
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <Link
-        to="/atendimentos"
-        className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold mb-6 transition-colors"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="m15 18-6-6 6-6" />
-        </svg>
-        Voltar para a lista
-      </Link>
-
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">
+      <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
         Criar Novo Atendimento
       </h1>
 
@@ -205,12 +174,12 @@ export function AtendimentoCreatePage() {
         </div>
       )}
 
-      <div className="bg-white shadow-md rounded-lg p-6 sm:p-8">
+      <div className="bg-white shadow-lg rounded-lg p-6 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
               htmlFor="pessoaAssistida"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="font-medium text-gray-700"
             >
               Pessoa Assistida *
             </label>
@@ -224,24 +193,16 @@ export function AtendimentoCreatePage() {
               required
             >
               <option value={0}>Selecione uma pessoa assistida</option>
-              {pessoasAssistidas.map((pessoa) => (
-                <option key={pessoa.id} value={pessoa.id}>
-                  {pessoa.descricao}
+              {pessoasAssistidas.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.descricao}
                 </option>
               ))}
             </select>
-            {pessoasAssistidas.length === 0 && (
-              <p className="text-sm text-gray-500 mt-1">
-                Nenhuma pessoa assistida encontrada
-              </p>
-            )}
           </div>
 
           <div>
-            <label
-              htmlFor="chamado"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
+            <label htmlFor="chamado" className="font-medium text-gray-700">
               Chamado *
             </label>
             <select
@@ -254,24 +215,17 @@ export function AtendimentoCreatePage() {
               required
             >
               <option value={0}>Selecione um chamado</option>
-              {chamados.map((chamado) => (
-                <option key={chamado.id} value={chamado.id}>
-                  #{chamado.id} - {chamado.bairro}, {chamado.rua}
+              {chamados.map((c) => (
+                <option key={c.id} value={c.id}>
+                  #{c.id} - {c.bairro || "Não informado"},{" "}
+                  {c.rua || "Não informado"}
                 </option>
               ))}
             </select>
-            {chamados.length === 0 && (
-              <p className="text-sm text-gray-500 mt-1">
-                Nenhum chamado encontrado
-              </p>
-            )}
           </div>
 
           <div>
-            <label
-              htmlFor="viatura"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
+            <label htmlFor="viatura" className="font-medium text-gray-700">
               Viatura *
             </label>
             <select
@@ -284,24 +238,16 @@ export function AtendimentoCreatePage() {
               required
             >
               <option value={0}>Selecione uma viatura</option>
-              {viaturas.map((viatura) => (
-                <option key={viatura.id} value={viatura.id}>
-                  {viatura.placa} - {viatura.identificador}
+              {viaturas.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.descricao}
                 </option>
               ))}
             </select>
-            {viaturas.length === 0 && (
-              <p className="text-sm text-gray-500 mt-1">
-                Nenhuma viatura encontrada
-              </p>
-            )}
           </div>
 
           <div>
-            <label
-              htmlFor="responsavel"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
+            <label htmlFor="responsavel" className="font-medium text-gray-700">
               Responsável *
             </label>
             <select
@@ -314,23 +260,18 @@ export function AtendimentoCreatePage() {
               required
             >
               <option value={0}>Selecione um responsável</option>
-              {usuarios.map((usuario) => (
-                <option key={usuario.id} value={usuario.id}>
-                  {usuario.descricao}
+              {usuarios.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.descricao}
                 </option>
               ))}
             </select>
-            {usuarios.length === 0 && (
-              <p className="text-sm text-gray-500 mt-1">
-                Nenhum usuário encontrado
-              </p>
-            )}
           </div>
 
           <div>
             <label
               htmlFor="atendimentoTipo"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="font-medium text-gray-700"
             >
               Tipo de Atendimento *
             </label>
@@ -344,24 +285,16 @@ export function AtendimentoCreatePage() {
               required
             >
               <option value={0}>Selecione um tipo de atendimento</option>
-              {atendimentoTipos.map((tipo) => (
-                <option key={tipo.id} value={tipo.id}>
-                  {tipo.descricao}
+              {atendimentoTipos.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.descricao}
                 </option>
               ))}
             </select>
-            {atendimentoTipos.length === 0 && (
-              <p className="text-sm text-gray-500 mt-1">
-                Nenhum tipo de atendimento encontrado
-              </p>
-            )}
           </div>
 
           <div>
-            <label
-              htmlFor="observacao"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
+            <label htmlFor="observacao" className="font-medium text-gray-700">
               Observação
             </label>
             <textarea
@@ -378,14 +311,14 @@ export function AtendimentoCreatePage() {
             <button
               type="button"
               onClick={() => navigate("/atendimentos")}
-              className="py-2 px-4 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="py-2 px-6 border rounded-md text-gray-700 hover:bg-gray-100 transition"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="py-2 px-6 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
             >
               {isSubmitting ? "Salvando..." : "Salvar Atendimento"}
             </button>

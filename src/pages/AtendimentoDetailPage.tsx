@@ -40,7 +40,7 @@ export function AtendimentoDetailPage() {
       setIsFinalizando(true);
       setError(null);
 
-      await api.get(`/Atendimento/Finalizar?AtendimentoId=${id}`);
+      await api.get(`/Atendimento/Finalizar?AtendimentoId=${Number(id)}`);
 
       const response = await api.get(`/Atendimento/${id}`);
       setAtendimento(response.data.dados);
@@ -79,7 +79,12 @@ export function AtendimentoDetailPage() {
     );
   }
 
-  const isAtendimentoFinalizado = !!atendimento.dataFim;
+  const isAtendimentoFinalizado =
+    !!atendimento.dataFim || atendimento.status?.label === "Finalizado";
+
+  const podeFinalizar =
+    !isAtendimentoFinalizado &&
+    atendimento.status?.label !== "Aguardando documentação";
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -114,7 +119,7 @@ export function AtendimentoDetailPage() {
           Detalhes do Atendimento #{atendimento.id}
         </h1>
 
-        {!isAtendimentoFinalizado && (
+        {podeFinalizar ? (
           <button
             onClick={handleFinalizar}
             disabled={isFinalizando}
@@ -122,6 +127,10 @@ export function AtendimentoDetailPage() {
           >
             {isFinalizando ? "Finalizando..." : "Finalizar Atendimento"}
           </button>
+        ) : (
+          <span className="px-4 py-2 bg-gray-200 text-gray-600 rounded-md">
+            {isAtendimentoFinalizado ? "Finalizado" : atendimento.status?.label}
+          </span>
         )}
       </div>
 
