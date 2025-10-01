@@ -30,16 +30,37 @@ export function AtendimentosPage() {
         const payload: any = {
           currentPage: currentPage,
           pageSize: pageSize,
+          ativo: true,
         };
 
         if (filtrosAtivos.pesquisa) {
           payload.pesquisa = filtrosAtivos.pesquisa;
         }
 
+        console.log("Buscando atendimentos com payload:", payload);
         const response = await api.post("/Atendimento/listagem", payload);
+        console.log("Resposta da API:", response.data);
 
-        setAtendimentos(response.data.dados.dados);
-        setTotalPages(response.data.dados.totalPages);
+        let atendimentosData = [];
+        let totalPagesData = 0;
+
+        if (response.data?.dados?.dados) {
+          atendimentosData = response.data.dados.dados;
+          totalPagesData = response.data.dados.totalPages || 0;
+        } else if (response.data?.dados) {
+          atendimentosData = Array.isArray(response.data.dados)
+            ? response.data.dados
+            : [];
+          totalPagesData = response.data.totalPages || 1;
+        } else if (response.data) {
+          atendimentosData = Array.isArray(response.data)
+            ? response.data
+            : response.data.dados || [];
+          totalPagesData = response.data.totalPages || 1;
+        }
+
+        setAtendimentos(atendimentosData);
+        setTotalPages(totalPagesData);
         setError(null);
       } catch (err) {
         console.error("Erro ao buscar atendimentos:", err);
@@ -182,7 +203,17 @@ export function AtendimentosPage() {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {atendimento.status?.label || "N/A"}
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            atendimento.status?.label === "Finalizado"
+                              ? "bg-green-100 text-green-800"
+                              : atendimento.status?.label === "Rejeitado"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
+                          {atendimento.status?.label || "N/A"}
+                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
@@ -208,25 +239,27 @@ export function AtendimentosPage() {
             </table>
           </div>
 
-          <div className="flex items-center justify-center mt-6 gap-4">
-            <button
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="py-1 px-3 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Anterior
-            </button>
-            <span className="text-sm text-gray-700">
-              Página {currentPage} de {totalPages}
-            </span>
-            <button
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage >= totalPages}
-              className="py-1 px-3 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Próximo
-            </button>
-          </div>
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center mt-6 gap-4">
+              <button
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="py-1 px-3 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Anterior
+              </button>
+              <span className="text-sm text-gray-700">
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage >= totalPages}
+                className="py-1 px-3 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Próximo
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>
